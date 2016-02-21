@@ -1,15 +1,6 @@
 package tdigest
 
-import (
-	"math"
-	"sort"
-)
-
-type sortByMean []Centroid
-
-func (s sortByMean) Len() int           { return len(s) }
-func (s sortByMean) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s sortByMean) Less(i, j int) bool { return s[i].Mean < s[j].Mean }
+import "math"
 
 // MergingDigest amortizes computation by merging in fixed sized batches
 type MergingDigest struct {
@@ -79,7 +70,8 @@ func (digest *MergingDigest) Compress() {
 	if len(digest.unmerged) == 0 {
 		return
 	}
-	sort.Stable(sortByMean(digest.unmerged))
+	// Sort with a stable sorting algorithm
+	insertionSort(digest.unmerged, len(digest.unmerged))
 	sum := int64(0)
 	m := 0
 	i := 0

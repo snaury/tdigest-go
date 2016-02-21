@@ -73,3 +73,18 @@ func BenchmarkDigest(b *testing.B) {
 	}
 	digest.Compress()
 }
+
+func BenchmarkDigestOverNormalDistribution10Values(b *testing.B) {
+	rand := rand.New(rand.NewSource(42))
+	digest := New(100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		// For each benchmark iteration we add 10k values, otherwise the number of
+		// allocations won't be observable.
+		for j := 0; j < 10000; j++ {
+			digest.Add(rand.NormFloat64()*4+8, 1)
+			digest.Add(rand.NormFloat64()*2+18, 1)
+		}
+	}
+	digest.Compress()
+}
