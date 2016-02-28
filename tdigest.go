@@ -5,6 +5,9 @@ import (
 	"sort"
 )
 
+// Default maximum number of unmerged items
+const DefaultMaxUnmerged = 256
+
 type sortByMean []Centroid
 
 func (s sortByMean) Len() int           { return len(s) }
@@ -25,7 +28,7 @@ type MergingDigest struct {
 func New(compression float64) *MergingDigest {
 	return &MergingDigest{
 		compression: compression,
-		MaxUnmerged: 256,
+		MaxUnmerged: DefaultMaxUnmerged,
 	}
 }
 
