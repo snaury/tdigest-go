@@ -73,3 +73,32 @@ func BenchmarkDigest(b *testing.B) {
 	}
 	digest.Compress()
 }
+
+func BenchmarkDigest10BatchesNormal(b *testing.B) {
+	rand := rand.New(rand.NewSource(42))
+	digest := New(100)
+	b.ResetTimer()
+	for i := 0; i < 5*DefaultMaxUnmerged*b.N; i++ {
+		digest.Add(rand.NormFloat64()*4+8, 1)
+		digest.Add(rand.NormFloat64()*2+18, 1)
+	}
+	digest.Compress()
+}
+
+func BenchmarkDigest10BatchesSequential(b *testing.B) {
+	digest := New(100)
+	b.ResetTimer()
+	for i := int64(0); i < 10*DefaultMaxUnmerged*int64(b.N); i++ {
+		digest.Add(float64(i), 1)
+	}
+	digest.Compress()
+}
+
+func BenchmarkDigest10BatchesReverse(b *testing.B) {
+	digest := New(100)
+	b.ResetTimer()
+	for i := 10 * DefaultMaxUnmerged * int64(b.N); i > 0; i-- {
+		digest.Add(float64(i), 1)
+	}
+	digest.Compress()
+}
